@@ -13,7 +13,7 @@ const JuejinBlog = require('./blog-platform/juejin');
     defaultViewport: null
   });
 
-  const markdownPath = '/Users/lumin/lumin.repo/yf-blog-hugo/content/articles/webpack-module-federation/index.md';
+  const markdownPath = '/Users/lumin/lumin.repo/yf-blog-hugo/content/articles/mobile-debug-skill/index.md';
   const content = getContent(markdownPath);
 
   function getSection(markdownPath) {
