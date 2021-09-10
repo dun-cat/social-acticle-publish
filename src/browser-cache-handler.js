@@ -1,15 +1,26 @@
 const { writeFile, readFile } = require('./utils/file');
 const path = require('path');
+const fse = require('fs-extra');
 
-const cookiePath = path.resolve(__dirname, './data/cookie.json')
-const localStoragePath = path.resolve(__dirname, './data/localstorage.json')
 
-async function saveCoockies(page) {
-  const returnedCookie = await page.cookies();
-  writeFile(cookiePath, returnedCookie)
+fse.ensureDirSync(path.resolve(__dirname, `./data/`))
+
+function getCookiePath(platform) {
+  const file = path.resolve(__dirname, `./data/${platform}_cookie.json`)
+  return file
 }
 
-async function saveLocalStorage(page) {
+function getLocalStoragePath(platform) {
+  const file = path.resolve(__dirname, `./data/${platform}_localstorage.json`)
+  return file
+}
+
+async function saveCoockies(platform, page) {
+  const returnedCookie = await page.cookies();
+  writeFile(getCookiePath(platform), returnedCookie)
+}
+
+async function saveLocalStorage(platform, page) {
   const localStorageData = await page.evaluate(() => {
     let json = {};
     for (let i = 0; i < localStorage.length; i++) {
@@ -18,17 +29,21 @@ async function saveLocalStorage(page) {
     }
     return json;
   });
-  writeFile(localStoragePath, localStorageData)
+  writeFile(getLocalStoragePath(platform), localStorageData)
 }
 
-function readCookies() {
-  return readFile(cookiePath).then(data => JSON.parse(data)).catch(error => {
+function readCookies(platform) {
+  const file = getCookiePath(platform);
+  if (!fse.existsSync(file)) return Promise.resolve(null)
+  return readFile(file).then(data => JSON.parse(data)).catch(error => {
     console.log(error)
   })
 }
 
-function readLocalStorage() {
-  return readFile(localStoragePath).then(data => JSON.parse(data)).catch(error => {
+function readLocalStorage(platform) {
+  const file = getLocalStoragePath(platform);
+  if (!fse.existsSync(file)) return Promise.resolve(null)
+  return readFile(getLocalStoragePath(platform)).then(data => JSON.parse(data)).catch(error => {
     console.log(error)
   })
 }

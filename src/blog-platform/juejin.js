@@ -36,8 +36,8 @@ class JuejinBlog {
 
     this.page = page;
 
-    const cookies = await readCookies();
-    const storage = await readLocalStorage();
+    const cookies = await readCookies('juejin');
+    const storage = await readLocalStorage('juejin');
 
     // 恢复 cookie
     if (cookies) {
@@ -59,9 +59,6 @@ class JuejinBlog {
     return page;
   }
 
-
-
-
   async waitForLogin() {
     const { page } = this;
 
@@ -70,10 +67,10 @@ class JuejinBlog {
     const xpath = '//*[@id="juejin"]/div[1]/div/header/div/nav/ul/li[4]/div/img';
     const isLogined = await page.waitForXPath(xpath).then(() => {
 
-      saveCoockies(page).catch((error) => {
+      saveCoockies('juejin', page).catch((error) => {
         console.log(error)
       });
-      saveLocalStorage(page).catch((error) => {
+      saveLocalStorage('juejin', page).catch((error) => {
         console.log(error)
       });
 
