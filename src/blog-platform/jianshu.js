@@ -1,73 +1,14 @@
 const { saveCoockies, saveLocalStorage, readCookies, readLocalStorage } = require('../browser-cache-handler');
-const { sequenceExecTask } = require('../utils/helper');
 
-async function injectToDocument(page, text, selector) {
-  await page.waitForSelector(selector)
-  const eleHandle = await page.$(selector)
-  await eleHandle.focus()
-  await eleHandle.click()
-
-  await page.keyboard.type(text);
-
-}
+const { createBrowser } = require('../utils/helper');
 
 class JianShuBlog {
 
-  async init(browser) {
+
+  async init() {
+    const browser = await createBrowser();
     this.browser = browser;
     const page = await browser.newPage();
-
-    page.on('request', (request) => {
-      const reg = new RegExp('/content_api/v1/article_draft/create');
-      if (reg.test(request.url())) {
-        // console.log(request.postData())
-      }
-    });
-
-    page.on('response', async (response) => {
-
-      const reg = new RegExp('/author/notes');
-      if (reg.test(response.url()) && response.request().method() === 'POST') {
-
-        // console.log(response.url(), await response.text())
-
-        const res = await response.json()
-
-        console.log(res)
-
-        // console.log({
-        //   title: this.content.title,
-        //   body: this.content.body,
-        //   id
-        // })
-
-        // await page.evaluate(async ({ title, body, id }) => {
-        //   const postData = JSON.stringify({
-        //     autosave_control: 3,
-        //     title, id,
-        //     content: body
-        //   })
-
-        //   await fetch(`https://www.jianshu.com/author/notes/${id}`, {
-        //     method: 'PUT',
-        //     body: postData
-        //   })
-
-        //   await fetch(`https://www.jianshu.com/author/notes/${id}/publicize`, {
-        //     method: 'POST',
-        //     body: "{}"
-        //   })
-
-        //   location.reload()
-
-        // }, {
-        //   title: this.content.title,
-        //   body: this.content.body,
-        //   id: "" + res.id
-        // });
-
-      }
-    });
 
     this.page = page;
 
@@ -103,6 +44,7 @@ class JianShuBlog {
 
     return new Promise((resolve, reject) => {
       browser.on('targetchanged', target => {
+        // 重定向到首页，以此为依据说明登录成功！
         if (target.url() === 'https://www.jianshu.com/') {
           saveCoockies('jianshu', page).catch((error) => {
             console.log(error)
@@ -142,7 +84,7 @@ class JianShuBlog {
 
       console.log(id)
 
-      // 修改文章
+      // 更新文章
       await fetch(`https://www.jianshu.com/author/notes/${id}`, {
         method: 'PUT',
         headers: {
@@ -156,6 +98,7 @@ class JianShuBlog {
         })
       })
 
+      // 简书平台，一天只允许发布两次
       // 发布文章
       return fetch(`https://www.jianshu.com/author/notes/${id}/publicize`, {
         method: 'POST',
@@ -171,14 +114,15 @@ class JianShuBlog {
       notebook_id
     });
 
+
     if (result.error) {
+      console.log(`简书发布状态：Failed`)
       console.log(result.error)
     } else {
-      console.log('简书：发布成功！')
-      page.reload()
+      console.log(`简书发布状态：Done`)
+      // page.reload()
     }
   }
-
 }
 
 module.exports = JianShuBlog;

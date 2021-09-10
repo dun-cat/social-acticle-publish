@@ -1,38 +1,12 @@
 const { saveCoockies, saveLocalStorage, readCookies, readLocalStorage } = require('../browser-cache-handler');
-const { sequenceExecTask } = require('../utils/helper');
-
-async function injectToDocument(page, text, selector) {
-  await page.waitForSelector(selector)
-  const eleHandle = await page.$(selector)
-  await eleHandle.focus()
-  await eleHandle.click()
-
-  await page.keyboard.type(text);
-
-}
+const { sequenceExecTask, createBrowser } = require('../utils/helper');
 
 class JuejinBlog {
 
-  async init(browser) {
+
+  async init() {
+    const browser = await createBrowser()
     const page = await browser.newPage();
-
-
-    page.on('request', (request) => {
-      // https://api.juejin.cn/content_api/v1/article_draft/create'
-      // 'content_api/v1/article/publish'
-      const reg = new RegExp('/content_api/v1/article_draft/create');
-      if (reg.test(request.url())) {
-        // console.log(request.postData())
-      }
-    });
-
-    page.on('response', async (response) => {
-
-      const reg = new RegExp('/content_api/v1/article_draft/create');
-      if (reg.test(response.url())) {
-        // console.log(await response.text())
-      }
-    });
 
     this.page = page;
 
@@ -148,12 +122,13 @@ class JuejinBlog {
         setTimeout(async () => {
           const handle = await page.$(selector)
           await handle.click()
-          resolve()
+          resolve(true)
         }, delay);
       })
     })
 
-    sequenceExecTask(actionsPromises)
+    const isSuccess = await sequenceExecTask(actionsPromises)
+    console.log(`掘金发布状态：${isSuccess ? 'Done' : 'Failed'}`)
   }
 
 }

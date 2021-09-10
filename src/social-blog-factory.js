@@ -1,18 +1,19 @@
+const JuejinBlog = require('./blog-platform/juejin');
+const JianShuBlog = require('./blog-platform/jianshu');
+const ZhiHuBlog = require('./blog-platform/zhihu');
+
 class SocialBlogFactory {
 
-
-  login() {
-
+  constructor(platform) {
+    switch (platform) {
+      case 'juejin':
+        return new JuejinBlog();
+      case 'jianshu':
+        return new JianShuBlog();
+      case 'zhihu':
+        return new ZhiHuBlog();
+    }
   }
-
-  publish(content) {
-
-  }
-
-  update(content) {
-
-  }
-
-
-
 }
+
+module.exports = SocialBlogFactory

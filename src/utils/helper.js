@@ -1,6 +1,10 @@
 const fse = require('fs-extra');
 const fm = require('front-matter');
 const marked = require('marked');
+const path = require('path');
+const puppeteer = require('puppeteer')
+
+const { writeFile } = require('./file');
 
 marked.setOptions({
   xhtml: true
@@ -58,6 +62,21 @@ function parseMarkdown(content, baseUrl, section) {
   return result
 }
 
+
+function writeContentToLocalFile(body) {
+  const filePath = path.join(__dirname, '../../temp/article.md');
+  fse.ensureFileSync(filePath);
+  return writeFile(filePath, body).then(() => filePath)
+}
+
+function createBrowser() {
+  return puppeteer.launch({
+    headless: false,
+    args: ['--window-size=1366,868', '--disable-web-security'],
+    defaultViewport: null
+  });
+}
+
 module.exports = {
-  getContent, sequenceExecTask, parseMarkdown
+  getContent, sequenceExecTask, parseMarkdown, writeContentToLocalFile, createBrowser
 }
