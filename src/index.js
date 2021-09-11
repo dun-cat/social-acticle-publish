@@ -1,14 +1,14 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 
-const { getContent, parseMarkdown } = require('./utils/helper');
+const { getContent, parseMarkdown, writeContentToLocalFile } = require('./utils/helper');
 
 const SocialBlogFactory = require('./social-blog-factory');
 
 
 (async () => {
 
-  const markdownPath = '/Users/lumin/lumin.repo/yf-blog-hugo/content/articles/what-is-lerna/index.md';
+  const markdownPath = '/Users/lumin/lumin.repo/yf-blog-hugo/content/articles/linux-top/index.md';
   const content = getContent(markdownPath);
   function getSection(markdownPath) {
     const p = path.dirname(markdownPath) + '/';
@@ -17,13 +17,15 @@ const SocialBlogFactory = require('./social-blog-factory');
   const section = getSection(markdownPath)
   const parsed = parseMarkdown(content.body, 'https://www.lumin.tech', section)
 
+  // await writeContentToLocalFile(parsed);
+
 
   // 掘金
-  const juejinBlog = new SocialBlogFactory('juejin');
-  await juejinBlog.init();
-  const isJueJinLogined = await juejinBlog.waitForLogin();
-  console.log('掘金登录状态：', isJueJinLogined)
-  await juejinBlog.publish({ ...content, body: parsed });
+  // const juejinBlog = new SocialBlogFactory('juejin');
+  // await juejinBlog.init();
+  // const isJueJinLogined = await juejinBlog.waitForLogin();
+  // console.log('掘金登录状态：', isJueJinLogined)
+  // await juejinBlog.publish({ ...content, body: parsed });
 
   // 简书
   const jianshuBlog = new SocialBlogFactory('jianshu');

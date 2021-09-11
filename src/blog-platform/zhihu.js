@@ -95,12 +95,11 @@ class ZhiHuBlog {
         name: 'publishSelector',
         selector: '#root > div > main > div > div.ColumnPageHeader-Wrapper > div > div > div > div.ColumnPageHeader-Button > div.PublishPanel-wrapper',
         event: 'click',
-        delay: 3000
+        delay: 6000
       }, {
         name: 'publishSelector',
         selector: '#root > div > main > div > div.ColumnPageHeader-Wrapper > div > div > div > div.ColumnPageHeader-Button > div.PublishPanel-wrapper > div > div > div.PublishPanel-stepOneButton > button',
-        event: 'click',
-        delay: 3000
+        event: 'click'
       }
     ]
 
