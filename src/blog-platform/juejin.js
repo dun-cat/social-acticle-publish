@@ -1,8 +1,7 @@
 const { saveCoockies, saveLocalStorage, readCookies, readLocalStorage } = require('../browser-cache-handler');
-const { sequenceExecTask, createBrowser } = require('../utils/helper');
+const { playActions, createBrowser } = require('../utils/helper');
 
 class JuejinBlog {
-
 
   async init() {
     const browser = await createBrowser()
@@ -92,42 +91,35 @@ class JuejinBlog {
     // 跳转至草稿
     await page.goto(`https://juejin.cn/editor/drafts/${result.data.id}`)
 
-    // 单击发布按钮
+    // 动作列表
     const actionList = [
-
       {
         name: 'publishAlertSelector',
-        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding > button'
+        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding > button',
+        event: 'click'
       }, {
         name: 'categorySelector',
-        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding.active > div > div:nth-child(2) > div.form-item-content.category-list > div:nth-child(2)'
+        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding.active > div > div:nth-child(2) > div.form-item-content.category-list > div:nth-child(2)',
+        event: 'click'
       },
       {
         name: 'tagAlertSelector',
-        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding.active > div > div:nth-child(3) > div.form-item-content > div > div > div > div.byte-select__content-wrap > div'
+        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding.active > div > div:nth-child(3) > div.form-item-content > div > div > div > div.byte-select__content-wrap > div',
+        event: 'click'
       }, {
         name: 'tagSelector',
-        selector: 'body > div.byte-select-dropdown.byte-select-dropdown--multiple.tag-select-add-margin > div > li:nth-child(2)'
+        selector: 'body > div.byte-select-dropdown.byte-select-dropdown--multiple.tag-select-add-margin > div > li:nth-child(2)',
+        event: 'click'
       }, {
         name: 'publishSelector',
-        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding.active > div > div.footer > div > button.ui-btn.btn.primary.medium.default'
+        selector: '#juejin-web-editor > div.edit-draft > div > header > div.right-box > div.publish-popup.publish-popup.with-padding.active > div > div.footer > div > button.ui-btn.btn.primary.medium.default',
+        delay: 1000,
+        event: 'click'
       }
     ]
 
-    await page.waitForSelector(actionList[0].selector)
+    const isSuccess = await playActions(page, actionList)
 
-    const delay = 1000;
-    const actionsPromises = actionList.map(({ name, selector }) => {
-      return () => new Promise((resolve, reject) => {
-        setTimeout(async () => {
-          const handle = await page.$(selector)
-          await handle.click()
-          resolve(true)
-        }, delay);
-      })
-    })
-
-    const isSuccess = await sequenceExecTask(actionsPromises)
     console.log(`掘金发布状态：${isSuccess ? 'Done' : 'Failed'}`)
   }
 

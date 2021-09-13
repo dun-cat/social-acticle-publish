@@ -62,6 +62,36 @@ function parseMarkdown(content, baseUrl, section) {
   return result
 }
 
+async function playActions(page, actions) {
+  const actionsPromises = actions.map(({ name, selector, event, xpath, delay }) => {
+    return () => new Promise(async (resolve, reject) => {
+      let handle;
+      if (selector) {
+        await page.waitForSelector(selector)
+        handle = await page.$(selector)
+      } else {
+        handle = await page.$x(xpath)[0]
+      }
+
+      if (delay) {
+        await page.waitForTimeout(delay)
+      }
+
+      if (typeof event === 'string') {
+        await handle[event]()
+      } else if (typeof event === 'object' && event !== null) {
+        await handle[event.type](event.params)
+      }
+
+      resolve(true)
+    }).catch(err => {
+      console.log(err)
+    })
+  })
+
+  return await sequenceExecTask(actionsPromises)
+}
+
 
 function writeContentToLocalFile(body) {
   const filePath = path.join(__dirname, '../../temp/article.md');
@@ -78,5 +108,5 @@ function createBrowser() {
 }
 
 module.exports = {
-  getContent, sequenceExecTask, parseMarkdown, writeContentToLocalFile, createBrowser
+  getContent, sequenceExecTask, parseMarkdown, writeContentToLocalFile, createBrowser, playActions
 }

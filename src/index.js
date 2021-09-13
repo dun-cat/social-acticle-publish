@@ -7,7 +7,7 @@ const SocialBlogFactory = require('./social-blog-factory');
 
 (async () => {
 
-  const markdownPath = '/Users/lumin/lumin.repo/yf-blog-hugo/content/articles/oauth_v2/index.md';
+  const markdownPath = '/Users/lumin/lumin/lumin.repo/yf-blog-hugo/content/articles/what-is-promise/index.md';
   const content = getContent(markdownPath);
   function getSection(markdownPath) {
     const p = path.dirname(markdownPath) + '/';
@@ -27,19 +27,20 @@ const SocialBlogFactory = require('./social-blog-factory');
   await juejinBlog.publish({ ...content, body: parsed });
 
   // 简书
-  const jianshuBlog = new SocialBlogFactory('jianshu');
-  await jianshuBlog.init();
-  const isJianShuLogined = await jianshuBlog.waitForLogin();
-  console.log('简书登录状态：', isJianShuLogined)
-  await jianshuBlog.publish({ ...content, body: parsed });
+  // const jianshuBlog = new SocialBlogFactory('jianshu');
+  // await jianshuBlog.init();
+  // const isJianShuLogined = await jianshuBlog.waitForLogin();
+  // console.log('简书登录状态：', isJianShuLogined)
+  // await jianshuBlog.publish({ ...content, body: parsed });
 
   // 知乎
-  const zhihuBlog = new SocialBlogFactory('zhihu');
-  await zhihuBlog.init();
-  const isZhiHuLogined = await zhihuBlog.waitForLogin();
-  console.log('知乎登录状态：', isZhiHuLogined)
-  await zhihuBlog.publish({ ...content, body: parsed });
+  // const zhihuBlog = new SocialBlogFactory('zhihu');
+  // await zhihuBlog.init();
+  // const isZhiHuLogined = await zhihuBlog.waitForLogin();
+  // console.log('知乎登录状态：', isZhiHuLogined)
+  // await zhihuBlog.publish({ ...content, body: parsed });
 
+  // 头条
   // const toutiaoBlog = new SocialBlogFactory('toutiao');
   // await toutiaoBlog.init();
   // const isTouTiaoLogined = await toutiaoBlog.waitForLogin();

@@ -1,5 +1,5 @@
 const { saveCoockies, saveLocalStorage, readCookies, readLocalStorage } = require('../browser-cache-handler');
-const { sequenceExecTask, writeContentToLocalFile, createBrowser } = require('../utils/helper');
+const { writeContentToLocalFile, createBrowser, playActions } = require('../utils/helper');
 
 class ZhiHuBlog {
 
@@ -103,35 +103,8 @@ class ZhiHuBlog {
       }
     ]
 
+    const isSuccess = await playActions(page, actionList)
 
-    const actionsPromises = actionList.map(({ name, selector, event, xpath, delay }) => {
-      return () => new Promise(async (resolve, reject) => {
-        let handle;
-        if (selector) {
-          await page.waitForSelector(selector)
-          handle = await page.$(selector)
-        } else {
-          handle = await page.$x(xpath)[0]
-        }
-
-        if (delay) {
-          await page.waitForTimeout(delay)
-        }
-
-
-        if (typeof event === 'string') {
-          await handle[event]()
-        } else if (typeof event === 'object' && event !== null) {
-          await handle[event.type](event.params)
-        }
-
-        resolve(true)
-      }).catch(err => {
-        console.log(err)
-      })
-    })
-
-    const isSuccess = await sequenceExecTask(actionsPromises)
     console.log(`知乎发布状态：${isSuccess ? 'Done' : 'Failed'}`)
   }
 
