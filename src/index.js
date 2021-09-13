@@ -5,10 +5,9 @@ const { getContent, parseMarkdown, writeContentToLocalFile } = require('./utils/
 
 const SocialBlogFactory = require('./social-blog-factory');
 
-
 (async () => {
 
-  const markdownPath = '/Users/lumin/lumin.repo/yf-blog-hugo/content/articles/linux-top/index.md';
+  const markdownPath = '/Users/lumin/lumin.repo/yf-blog-hugo/content/articles/oauth_v2/index.md';
   const content = getContent(markdownPath);
   function getSection(markdownPath) {
     const p = path.dirname(markdownPath) + '/';
@@ -21,11 +20,11 @@ const SocialBlogFactory = require('./social-blog-factory');
 
 
   // 掘金
-  // const juejinBlog = new SocialBlogFactory('juejin');
-  // await juejinBlog.init();
-  // const isJueJinLogined = await juejinBlog.waitForLogin();
-  // console.log('掘金登录状态：', isJueJinLogined)
-  // await juejinBlog.publish({ ...content, body: parsed });
+  const juejinBlog = new SocialBlogFactory('juejin');
+  await juejinBlog.init();
+  const isJueJinLogined = await juejinBlog.waitForLogin();
+  console.log('掘金登录状态：', isJueJinLogined)
+  await juejinBlog.publish({ ...content, body: parsed });
 
   // 简书
   const jianshuBlog = new SocialBlogFactory('jianshu');
@@ -40,6 +39,12 @@ const SocialBlogFactory = require('./social-blog-factory');
   const isZhiHuLogined = await zhihuBlog.waitForLogin();
   console.log('知乎登录状态：', isZhiHuLogined)
   await zhihuBlog.publish({ ...content, body: parsed });
+
+  // const toutiaoBlog = new SocialBlogFactory('toutiao');
+  // await toutiaoBlog.init();
+  // const isTouTiaoLogined = await toutiaoBlog.waitForLogin();
+  // console.log('知乎登录状态：', isTouTiaoLogined)
+  // await toutiaoBlog.publish({ ...content, body: parsed });
 
   // await browser.close();
 })();

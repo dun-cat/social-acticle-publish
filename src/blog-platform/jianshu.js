@@ -4,7 +4,6 @@ const { createBrowser } = require('../utils/helper');
 
 class JianShuBlog {
 
-
   async init() {
     const browser = await createBrowser();
     this.browser = browser;
