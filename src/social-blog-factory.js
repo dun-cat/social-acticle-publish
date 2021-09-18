@@ -3,6 +3,8 @@ const JianShuBlog = require('./blog-platform/jianshu');
 const ZhiHuBlog = require('./blog-platform/zhihu');
 const TouTiaoBlog = require('./blog-platform/toutiao');
 
+
+
 class SocialBlogFactory {
 
   constructor(platform) {
