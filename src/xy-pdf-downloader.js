@@ -69,8 +69,9 @@ class XyPDFDownloader {
     //   return Promise.resolve(1)
     // }, 7);
 
-    await this.page.screenshot({
-      path: 'workfile.png'
+    await this.page.pdf({
+      path: 'workfile.pdf',
+      format: 'A4'
     })
 
     // const actionList = [
